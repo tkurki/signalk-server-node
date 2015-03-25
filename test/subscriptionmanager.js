@@ -169,29 +169,41 @@ function withSubscriptions(subscriptions) {
   var testEmitter = new TestEmitter();
   var subscriptionManager = new SubscriptionManager(testEmitter);
   var result = [];
-    console.log('hep')
   var callback = function(data) {
-    console.log('pushing')
     result.push(data);
   }
   subscriptions.forEach(function(subcription) {
     subscriptionManager.handleCommand("emptyid", subcription, callback);
   });
   return {
-    withInputSignalK: function(signalks) {
-      signalks.forEach(function(signalk) {
+    withInputSignalK: function(signalks, delay, done) {
+      var count = 0;
+      signalks.forEach(function(signalk, i) {
         signalk.context = signalk.context || 'vessels.self';
-        testEmitter.push(signalk);
+        if (delay) {
+          setTimeout(function() {
+            testEmitter.push(signalk);
+            if (++count === signalks.length) {
+              done(result);
+            }
+          }, delay * i);
+        } else {
+          testEmitter.push(signalk);
+        }
       })
       return {
         assertSignalkSequence: function(sequence) {
-          sequence.length.should.equal(result.length, 'Sequence lengths are equal');
-          for (i = 0; i < sequence.length; i += 1) {
-            assert.deepEqual(sequence[i], result[i], "Elements [" + i + "] are equal");
-          }
+          assertSequencesAreEqual(result, sequence);
         }
       }
     }
+  }
+}
+
+function assertSequencesAreEqual(sequence1, sequence2) {
+  sequence1.length.should.equal(sequence2.length, 'Sequence lengths are equal');
+  for (i = 0; i < sequence1.length; i += 1) {
+    assert.deepEqual(sequence1[i], sequence2[i], "Elements [" + i + "] are equal");
   }
 }
 
@@ -209,5 +221,31 @@ describe('With simple self subscription', function() {
     withSubscriptions([selfSubscriptionWithDepthAndSpeed])
       .withInputSignalK([stw1, current, stw2, depth])
       .assertSignalkSequence([stw1, stw2, depth]);
+  })
+});
+
+var vesselPositionsAndStwsOver3G = {
+  "context": "vessels.*",
+  "subscribe": [{
+    "path": "navigation.position",
+    "minPeriod": 100,
+    "format": "full",
+    "policy": "fixed"
+  }, {
+    "path": "navigation.speedThroughWater",
+    "minPeriod": 100,
+    "format": "full",
+    "policy": "fixed"
+  }]
+}
+
+describe('With period subscription', function() {
+  it('Correct sequence received', function(done) {
+    this.timeout(4000);
+    withSubscriptions([vesselPositionsAndStwsOver3G])
+      .withInputSignalK([stw1, stw2, current, depth, stw3], 50, function(resultSequence) {
+        assertSequencesAreEqual(resultSequence, [stw1, stw3]);
+        done();
+      });
   })
 });
