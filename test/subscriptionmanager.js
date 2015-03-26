@@ -1,4 +1,5 @@
 var debug = require('debug')('signalk:subscriptionmanager:test');
+var _ = require('lodash');
 
 
 var chai = require("chai");
@@ -165,6 +166,7 @@ var current = {
   }]
 };
 
+
 function withSubscriptions(subscriptions) {
   var testEmitter = new TestEmitter();
   var subscriptionManager = new SubscriptionManager(testEmitter);
@@ -179,7 +181,6 @@ function withSubscriptions(subscriptions) {
     withInputSignalK: function(signalks, delay, done) {
       var count = 0;
       signalks.forEach(function(signalk, i) {
-        signalk.context = signalk.context || 'vessels.self';
         if (delay) {
           setTimeout(function() {
             testEmitter.push(signalk);
@@ -203,7 +204,7 @@ function withSubscriptions(subscriptions) {
 function assertSequencesAreEqual(sequence1, sequence2) {
   sequence1.length.should.equal(sequence2.length, 'Sequence lengths are equal');
   for (i = 0; i < sequence1.length; i += 1) {
-    assert.deepEqual(sequence1[i], sequence2[i], "Elements [" + i + "] are equal");
+    assert(_.isEqual(sequence1[i], sequence2[i]) , "Elements [" + i + "] are equal, got " + JSON.stringify(sequence1[i], null, 2) + "  " + JSON.stringify(sequence2[i], null, 2));
   }
 }
 
@@ -219,8 +220,8 @@ var selfSubscriptionWithDepthAndSpeed = {
 describe('With simple self subscription', function() {
   it('Correct sequence received', function() {
     withSubscriptions([selfSubscriptionWithDepthAndSpeed])
-      .withInputSignalK([stw1, current, stw2, depth])
-      .assertSignalkSequence([stw1, stw2, depth]);
+      .withInputSignalK([stw1, current, stw2, depth].map(cloneWithContext('vessels.self')))
+      .assertSignalkSequence([stw1, stw2, depth].map(cloneWithContext('vessels.self')));
   })
 });
 
@@ -239,13 +240,21 @@ var vesselPositionsAndStwsOver3G = {
   }]
 }
 
+function cloneWithContext(context) {
+  return function(delta) {
+    var clone = _.clone(delta, true);
+    clone.context = context;
+    return clone;
+  }
+}
+
 describe('With period subscription', function() {
   it('Correct sequence received', function(done) {
     this.timeout(4000);
     withSubscriptions([vesselPositionsAndStwsOver3G])
-      .withInputSignalK([stw1, stw2, current, depth, stw3], 50, function(resultSequence) {
-        assertSequencesAreEqual(resultSequence, [stw1, stw3]);
+      .withInputSignalK([stw1, stw2, current, depth, stw3].map(cloneWithContext('vessels.self')), 50, function(resultSequence) {
+        assertSequencesAreEqual(resultSequence, [stw1, stw3].map(cloneWithContext('vessels.self')));
         done();
       });
-  })
+  });
 });
