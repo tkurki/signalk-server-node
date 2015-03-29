@@ -145,3 +145,45 @@ describe('With period subscription', function() {
       });
   });
 });
+
+describe('With multiple subscriptions', function() {
+  it('Correct sequence received', function(done) {
+    this.timeout(4000);
+    var testEmitter = new TestEmitter();
+    var subscriptionManager = new SubscriptionManager(testEmitter);
+    var emitDelta = testEmitter.emit.bind(testEmitter, 'change:delta');
+    var signalKs = [stw1].map(cloneWithContext('vessels.self'));
+    var result1 = [];
+    var result2 = [];
+    var result3 = [];
+
+    subscriptionManager.handleCommand("id1", selfSubscriptionWithDepthAndSpeed, result1.push.bind(result1));
+    subscriptionManager.handleCommand("id2", selfSubscriptionWithDepthAndSpeed, result2.push.bind(result2));
+    subscriptionManager.handleCommand("id3", selfSubscriptionWithDepthAndSpeed, result3.push.bind(result3));
+
+    signalKs.forEach(emitDelta);
+    result1.length.should.equal(1);
+    result2.length.should.equal(1);
+    result3.length.should.equal(1);
+
+    subscriptionManager.removeSubscriptions("id2");
+    signalKs.forEach(emitDelta);
+    result1.length.should.equal(2);
+    result2.length.should.equal(1);
+    result3.length.should.equal(2);
+
+    subscriptionManager.removeSubscriptions("id3");
+    signalKs.forEach(emitDelta);
+    result1.length.should.equal(3);
+    result2.length.should.equal(1);
+    result3.length.should.equal(2);
+
+    subscriptionManager.handleCommand("id3", selfSubscriptionWithDepthAndSpeed, result3.push.bind(result3));
+    signalKs.forEach(emitDelta);
+    result1.length.should.equal(4);
+    result2.length.should.equal(1);
+    result3.length.should.equal(3);
+
+    done();
+  })
+});
