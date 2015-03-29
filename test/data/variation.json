@@ -1,0 +1,15 @@
+{
+  "updates": [{
+    "source": {
+      "label": "",
+      "type": "NMEA2000",
+      "pgn": "127250",
+      "timestamp": "2014-08-15-16:00:00.078",
+      "src": "160"
+    },
+    "values": [{
+      "path": "navigation.magneticVariation",
+      "value": 8.3
+    }]
+  }]
+}

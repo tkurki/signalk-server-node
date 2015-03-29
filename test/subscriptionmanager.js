@@ -9,32 +9,13 @@ var SubscriptionManager = require('../lib/subscriptionmanager');
 
 var assert = require("assert")
 
-var apparentWindSpeed = {
-  "environment": {
-    "wind": {
-      "speedApparent": {
-        "value": 10.96,
-        "source": {
-          "label": "",
-          "type": "NMEA2000",
-          "pgn": "130306",
-          "src": "115"
-        },
-        "timestamp": "2014-08-15-16:00:00.785"
-      },
-      "angleApparent": {
-        "value": 58,
-        "source": {
-          "label": "",
-          "type": "NMEA2000",
-          "pgn": "130306",
-          "src": "115"
-        },
-        "timestamp": "2014-08-15-16:00:00.785"
-      }
-    }
-  }
-};
+var apparentWindSpeed = require('./data/apparentWind');
+var variation = require('./data/variation');
+var depth = require('./data/depth');
+var stw1 = require('./data/stw1');
+var stw2 = require('./data/stw2');
+var stw3 = require('./data/stw3');
+var current = require('./data/current');
 
 var emptySubscription = {
   "context": "vessels.self",
@@ -71,100 +52,6 @@ describe('Without subscriptions', function() {
     }, 1500);
   })
 });
-
-var variation = {
-  "updates": [{
-    "source": {
-      "label": "",
-      "type": "NMEA2000",
-      "pgn": "127250",
-      "timestamp": "2014-08-15-16:00:00.078",
-      "src": "160"
-    },
-    "values": [{
-      "path": "navigation.magneticVariation",
-      "value": 8.3
-    }]
-  }]
-};
-var depth = {
-  "updates": [{
-    "source": {
-      "label": "",
-      "type": "NMEA2000",
-      "pgn": "128267",
-      "timestamp": "2014-08-15-16:00:00.081",
-      "src": "115"
-    },
-    "values": [{
-      "path": "environment.depth.belowTransducer",
-      "value": 43.21
-    }]
-  }]
-};
-var stw1 = {
-  "updates": [{
-    "source": {
-      "label": "",
-      "type": "NMEA2000",
-      "pgn": "128259",
-      "timestamp": "2014-08-15-16:00:00.417",
-      "src": "115"
-    },
-    "values": [{
-      "path": "navigation.speedThroughWater",
-      "value": 3.61
-    }]
-  }]
-};
-var stw2 = {
-  "updates": [{
-    "source": {
-      "label": "",
-      "type": "NMEA2000",
-      "pgn": "128259",
-      "timestamp": "2014-08-15-16:00:02.376",
-      "src": "115"
-    },
-    "values": [{
-      "path": "navigation.speedThroughWater",
-      "value": 3.76
-    }]
-  }]
-};
-var stw3 = {
-  "updates": [{
-    "source": {
-      "label": "",
-      "type": "NMEA2000",
-      "pgn": "128259",
-      "timestamp": "2014-08-15-16:00:02.418",
-      "src": "115"
-    },
-    "values": [{
-      "path": "navigation.speedThroughWater",
-      "value": 3.74
-    }]
-  }]
-};
-var current = {
-  "updates": [{
-    "source": {
-      "label": "",
-      "type": "NMEA2000",
-      "pgn": "129291",
-      "timestamp": "2014-08-15-16:00:02.558",
-      "src": "160"
-    },
-    "values": [{
-      "path": "navigation.current",
-      "value": {
-        "setTrue": 96.3,
-        "drift": 0.56
-      }
-    }]
-  }]
-};
 
 
 function withSubscriptions(subscriptions) {

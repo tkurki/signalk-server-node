@@ -1,0 +1,15 @@
+{
+  "updates": [{
+    "source": {
+      "label": "",
+      "type": "NMEA2000",
+      "pgn": "128259",
+      "timestamp": "2014-08-15-16:00:02.418",
+      "src": "115"
+    },
+    "values": [{
+      "path": "navigation.speedThroughWater",
+      "value": 3.74
+    }]
+  }]
+}

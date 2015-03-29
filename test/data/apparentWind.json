@@ -1,0 +1,26 @@
+{
+  "environment": {
+    "wind": {
+      "speedApparent": {
+        "value": 10.96,
+        "source": {
+          "label": "",
+          "type": "NMEA2000",
+          "pgn": "130306",
+          "src": "115"
+        },
+        "timestamp": "2014-08-15-16:00:00.785"
+      },
+      "angleApparent": {
+        "value": 58,
+        "source": {
+          "label": "",
+          "type": "NMEA2000",
+          "pgn": "130306",
+          "src": "115"
+        },
+        "timestamp": "2014-08-15-16:00:00.785"
+      }
+    }
+  }
+}
