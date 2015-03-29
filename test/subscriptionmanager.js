@@ -91,7 +91,7 @@ function withSubscriptions(subscriptions) {
 function assertSequencesAreEqual(sequence1, sequence2) {
   sequence1.length.should.equal(sequence2.length, 'Sequence lengths are equal');
   for (i = 0; i < sequence1.length; i += 1) {
-    assert(_.isEqual(sequence1[i], sequence2[i]) , "Elements [" + i + "] are equal, got " + JSON.stringify(sequence1[i], null, 2) + "  " + JSON.stringify(sequence2[i], null, 2));
+    assert(_.isEqual(sequence1[i], sequence2[i]), "Elements [" + i + "] are equal, got " + JSON.stringify(sequence1[i], null, 2) + "  " + JSON.stringify(sequence2[i], null, 2));
   }
 }
 
