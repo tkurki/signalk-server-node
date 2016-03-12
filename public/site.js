@@ -36,3 +36,44 @@ $(function() {
     });
   });
 });
+
+function submitForm() {
+  var http = new XMLHttpRequest();
+  http.open("POST", "/admin", true);
+  http.setRequestHeader("Content-type","application/json");
+
+  var params = {
+    vessel: {
+      name: $('#vesselName').val(),
+      brand: $('#vesselBrand').val(),
+      type: $('#vesselModel').val(),
+      year: $('#vesselYear').val(),
+      registration: $('#registration').val(),
+      mmsi: $('#mmsi').val(),
+      callsign: $('#callsign').val(),
+      uuid: getUUID()
+    }
+  }
+
+  console.log(params);
+
+  http.send(JSON.stringify(params));
+  http.onload = function() {
+    alert(http.responseText);
+  }
+
+}
+
+function getUUID() {
+  var uuidString = "urn:mrn:signalk:uuid:";
+  var uuid = [
+    $('#uuid_0').val(),
+    $('#uuid_1').val(),
+    $('#uuid_2').val(),
+    $('#uuid_3').val(),
+    $('#uuid_4').val()
+  ];
+  uuidString += uuid.join('-');
+
+  return uuidString;
+}
