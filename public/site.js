@@ -19,5 +19,20 @@
     )
     document.querySelector('head').appendChild(msViewportStyle)
   }
-
 })();
+
+$(function() {
+  $('#genUUID').click(function(e) {
+    e.preventDefault();
+
+    $.get('/admin/uuid', function(data) {
+      var uuid = data.uuid;
+      console.log(uuid);
+      $('#uuid_0').val(uuid[0]);
+      $('#uuid_1').val(uuid[1]);
+      $('#uuid_2').val(uuid[2]);
+      $('#uuid_3').val(uuid[3]);
+      $('#uuid_4').val(uuid[4]);
+    });
+  });
+});
