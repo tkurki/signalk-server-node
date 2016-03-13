@@ -22,6 +22,16 @@
 })();
 
 $(function() {
+  $('[data-toggle="tooltip"]').tooltip();
+
+  $('#provider-type').change(function(e) {
+    if($(e.target).val().contains('filestream')) {
+      $('#file-select').removeClass('hidden');
+    } else {
+      $('#file-select').addClass('hidden');
+    }
+  });
+
   $('#genUUID').click(function(e) {
     e.preventDefault();
 
@@ -35,6 +45,10 @@ $(function() {
       $('#uuid_4').val(uuid[4]);
     });
   });
+
+  if($('#provider-type').val().contains('filestream')) {
+    $('#file-select').removeClass('hidden');
+  }
 });
 
 function submitForm() {
@@ -45,27 +59,30 @@ function submitForm() {
   var params = {
     vessel: {
       name: $('#vesselName').val(),
-      brand: $('#vesselBrand').val(),
-      type: $('#vesselModel').val(),
+      manufacturer: $('#vesselBrand').val(),
+      model: $('#vesselModel').val(),
       year: $('#vesselYear').val(),
       registration: $('#registration').val(),
       mmsi: $('#mmsi').val(),
       callsign: $('#callsign').val(),
       uuid: getUUID()
-    }
+    },
+    listen: $('#listenOn').val(),
+    port: Number.parseInt($('#port').val()),
+    provider_type: $('#provider-type').val(),
+    log_file: $('#provider-file').val()
   }
 
   console.log(params);
 
   http.send(JSON.stringify(params));
   http.onload = function() {
-    alert(http.responseText);
+    console.log(http.response);
   }
 
 }
 
 function getUUID() {
-  var uuidString = "urn:mrn:signalk:uuid:";
   var uuid = [
     $('#uuid_0').val(),
     $('#uuid_1').val(),
@@ -73,7 +90,6 @@ function getUUID() {
     $('#uuid_3').val(),
     $('#uuid_4').val()
   ];
-  uuidString += uuid.join('-');
 
-  return uuidString;
+  return uuid;
 }
