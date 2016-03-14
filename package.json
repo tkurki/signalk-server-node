@@ -33,6 +33,10 @@
     {
       "name": "Teppo Kurki",
       "email": "teppo.kurki@iki.fi"
+    },
+    {
+      "name": "Tim Mathews",
+      "email": "tim@signalk.org"
     }
   ],
   "license": "Apache-2.0",

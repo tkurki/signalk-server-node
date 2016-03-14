@@ -1,15 +1,17 @@
 {
   "name": "signalk-server-node",
   "main": "index.js",
-  "version": "0.1.19",
+  "version": "0.1.20",
   "homepage": "https://github.com/SignalK/signalk-server-node",
   "authors": [
-    "Fabian Tollenaar <fabian@starting-point.nl>"
+    "Fabian Tollenaar <fabian@starting-point.nl>",
+    "Teppo Kurki <teppo.kurki@iki.fi>",
+    "Tim Mathews <tim@signalk.org>"
   ],
   "moduleType": [
     "node"
   ],
-  "license": "Apache 2",
+  "license": "Apache-2.0",
   "ignore": [
     "**/.*",
     "node_modules",
@@ -19,7 +21,13 @@
   ],
   "dependencies": {
     "instrumentpanel": "SignalK/instrumentpanel",
+    "maptracker": "SignalK/maptracker",
+    "sailgauge": "SignalK/sailgauge",
+    "simplegauges": "SignalK/simplegauges",
     "bootstrap": "^3.3.6",
+    "jquery": "^2.2.1"
+  },
+  "resolutions": {
     "jquery": "^2.2.1"
   }
 }
