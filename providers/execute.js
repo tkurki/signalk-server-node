@@ -48,7 +48,6 @@ Execute.prototype.pipe = function(pipeTo) {
     that.push(data);
   });
   if (this.options.toStdout) {
-    console.log(this.options.toStdout)
     this.options.app.on(this.options.toStdout, function(d) {
       that.childProcess.stdin.write(d + '\n');
     })
