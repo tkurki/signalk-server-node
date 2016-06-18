@@ -55,6 +55,13 @@ SerialStream.prototype.start = function() {
 
   this.serial.on('error', function(x) {console.log(x)});
   this.serial.on('close', this.start.bind(this));
+
+  var that = this;
+  if (this.options.toStdout) {
+    this.options.app.on(this.options.toStdout, function(d) {
+      that.serial.write(d + '\r\n');
+    })
+  }
 };
 
 SerialStream.prototype.end = function() {
