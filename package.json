@@ -43,6 +43,7 @@
   "dependencies": {
     "baconjs": "^0.7.84",
     "body-parser": "^1.14.1",
+    "camelcase": "^3.0.0",
     "colors": "^0.6.2",
     "concentrate": "^0.2.3",
     "cors": "^2.5.2",
@@ -54,6 +55,7 @@
     "express": "^4.10.4",
     "express-namespace": "^0.1.1",
     "flatmap": "0.0.3",
+    "influx": "^4.2.0",
     "js-quantities": "^1.6.1",
     "lodash": "^3.10.1",
     "minimist": "^1.1.0",
