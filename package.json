@@ -71,6 +71,7 @@
     "signalk-schema": "signalk/specification",
     "stream-throttle": "^0.1.3",
     "through": ">=2.2.7 <3",
+    "to-n2k": "github:tkurki/to-n2k",
     "winston": "^1.0.0",
     "ws": "^0.4.32"
   },
