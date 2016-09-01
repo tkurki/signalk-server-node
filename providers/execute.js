@@ -20,7 +20,7 @@
  */
 
 var Transform = require('stream').Transform;
-var debug = require('debug')('signalk:n2kAnalyzer');
+var debug = require('debug')('signalk:executor');
 
 function Execute(options) {
   Transform.call(this, {});
@@ -49,6 +49,7 @@ Execute.prototype.pipe = function(pipeTo) {
   });
   if (this.options.toStdout) {
     this.options.app.on(this.options.toStdout, function(d) {
+      debug(d)
       that.childProcess.stdin.write(d + '\n');
     })
   }
