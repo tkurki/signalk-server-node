@@ -5,6 +5,10 @@
     "uuid"  : "urn:mrn:signalk:uuid:d89fc456-8abb-4ad3-ac74-c07513fc167b"
   },
 
+  "security": {
+    "strategy": "./codeafloatsecurity"
+  },
+
   "interfaces": {
     "charts": false,
     "tcp": false,
