@@ -110,8 +110,8 @@ function nmea2000input (pipeline, subOptions) {
   var command
   var toChildProcess
   if (subOptions.type == 'ngt-1') {
-    ;(command = `actisense-serial ${subOptions.device}`),
-    (toChildProcess = 'nmea2000out')
+    command = `actisense-serial ${subOptions.device}`
+    toChildProcess = 'nmea2000out'
   } else if (subOptions.type == 'canbus') {
     command = `candump ${subOptions.interface}`
     toChildProcess = null
