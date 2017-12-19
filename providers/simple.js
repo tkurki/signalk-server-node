@@ -81,21 +81,13 @@ const discriminatorByDataType = {
 }
 
 const dataTypeMapping = {
-  SignalK: (pipeline, options) => {
-    if (options.type != 'wss' && options.type != 'ws') {
-      pipeline.push(new from_json(options))
-    }
-  },
-  NMEA0183: (pipeline, options) => {
-    pipeline.push(new nmea0183_signalk(options))
-  },
-  NMEA2000: (pipeline, options) => {
-    pipeline.push(new n2kAnalyzer(options))
-    pipeline.push(new n2k_signalk(options))
-  },
-  Multiplexed: (pipeline, options) => {
-    pipeline.push(new multiplexedlog(options))
-  }
+  SignalK: options =>
+    options.type != 'wss' && options.type != 'ws'
+      ? [new from_json(options)]
+      : [],
+  NMEA0183: options => [new nmea0183_signalk(options)],
+  NMEA2000: options => [new n2kAnalyzer(options), new n2k_signalk(options)],
+  Multiplexed: options => [new multiplexedlog(options)]
 }
 
 const pipeStartByType = {
