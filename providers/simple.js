@@ -106,9 +106,9 @@ const pipeStartByType = {
   SignalK: signalKInput
 }
 
-function nmea2000input (pipeline, subOptions) {
-  var command
-  var toChildProcess
+function nmea2000input (subOptions) {
+  let command
+  let toChildProcess
   if (subOptions.type == 'ngt-1') {
     command = `actisense-serial ${subOptions.device}`
     toChildProcess = 'nmea2000out'
@@ -118,14 +118,14 @@ function nmea2000input (pipeline, subOptions) {
   } else {
     throw new Error(`unknown NMEA2000 type ${subOptions.type}`)
   }
-  pipeline.push(
+  return [
     new execute({
       command: command,
       toChildProcess: toChildProcess,
       app: subOptions.app
-    })
-  )
-  pipeline.push(new liner(subOptions))
+    }),
+    new liner(subOptions)
+  ]
 }
 
 function nmea0183input (subOptions) {
