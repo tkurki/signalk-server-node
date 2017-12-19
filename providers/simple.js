@@ -30,7 +30,7 @@ function Simple (options) {
   var dataType = options.subOptions.dataType
 
   if (!dataType) {
-    dataType = dataTypeForType[options.type]
+    dataType = options.type
     if (!dataType) {
       throw new Error(`Unknown data type for ${options.type}`)
     }
@@ -104,12 +104,6 @@ const pipeStartByType = {
   Execute: executeInput,
   FileStream: fileInput,
   SignalK: signalKInput
-}
-
-const dataTypeForType = {
-  NMEA2000: 'NMEA2000',
-  NMEA0183: 'NMEA0183',
-  SignalK: 'SignalK'
 }
 
 function nmea2000input (pipeline, subOptions) {
