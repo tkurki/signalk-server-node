@@ -161,28 +161,19 @@ function fileInput (pipeline, subOptions) {
   pipeline.push(new liner(subOptions))
 }
 
-function signalKInput (pipeline, subOptions) {
-  var el
-  var needsLiner = true
+function signalKInput (subOptions) {
   if (subOptions.type === 'ws' || subOptions.type === 'wss') {
-    var options = { app: subOptions.app }
+    const options = { app: subOptions.app }
     if (!subOptions.useDiscovery) {
       options.host = subOptions.host
       options.port = subOptions.port
     }
     options.protocol = subOptions.type
-    const mdns_ws = require('./mdns-ws')
-    el = new mdns_ws(options)
-    needsLiner = false
+    return [require('./mdns-ws')(options)]
   } else if (subOptions.type === 'tcp') {
-    el = new tcp(subOptions)
+    return [new tcp(subOptions), new liner(suboptions)]
   } else if (subOptions.type === 'udp') {
-    el = new udp(subOptions)
-  } else {
-    throw new Error(`unknown SignalK type: ${subOptions.type}`)
+    return [new udp(subOptions)]
   }
-  pipeline.push(el)
-  if (needsLiner) {
-    pipeline.push(new liner(subOptions))
-  }
+  throw new Error(`unknown SignalK type: ${subOptions.type}`)
 }
