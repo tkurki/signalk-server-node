@@ -143,9 +143,8 @@ function nmea0183input (pipeline, subOptions) {
   pipeline.push(new liner(subOptions))
 }
 
-function execute (pipeline, subOptions) {
-  pipeline.push(new execute(subOptions))
-  pipeline.push(new liner(subOptions))
+function execute (subOptions) {
+  return [new execute(subOptions), new liner(subOptions)]
 }
 
 function fileInput (subOptions) {
