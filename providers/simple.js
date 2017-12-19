@@ -80,85 +80,6 @@ const discriminatorByDataType = {
   SignalK: 'I'
 }
 
-const pipeStartByType = {
-  NMEA2000: (pipeline, subOptions) => {
-    var command
-    var toChildProcess
-    if (subOptions.type == 'ngt-1') {
-      ;(command = `actisense-serial ${subOptions.device}`),
-      (toChildProcess = 'nmea2000out')
-    } else if (subOptions.type == 'canbus') {
-      command = `candump ${subOptions.interface}`
-      toChildProcess = null
-    } else {
-      throw new Error(`unknown NMEA2000 type ${subOptions.type}`)
-    }
-    pipeline.push(
-      new execute({
-        command: command,
-        toChildProcess: toChildProcess,
-        app: subOptions.app
-      })
-    )
-    pipeline.push(new liner(subOptions))
-  },
-  NMEA0183: (pipeline, subOptions) => {
-    var el
-    if (subOptions.type == 'tcp') {
-      el = new tcp(subOptions)
-    } else if (subOptions.type === 'udp') {
-      el = new udp(subOptions)
-    } else if (subOptions.type === 'serial') {
-      el = new serialport(subOptions)
-    } else {
-      throw new Error(`Unknown networking tyoe: ${options.networking}`)
-    }
-    pipeline.push(el)
-    pipeline.push(new liner(subOptions))
-  },
-  Execute: (pipeline, subOptions) => {
-    pipeline.push(new execute(subOptions))
-    pipeline.push(new liner(subOptions))
-  },
-  FileStream: (pipeline, subOptions) => {
-    pipeline.push(new filestream(subOptions))
-    if (subOptions.dataType != 'Multiplexed') {
-      pipeline.push(
-        new throttle({
-          rate: subOptions.throttleRate || 1000,
-          app: subOptions.app
-        })
-      )
-    }
-    pipeline.push(new liner(subOptions))
-  },
-  SignalK: (pipeline, subOptions) => {
-    var el
-    var needsLiner = true
-    if (subOptions.type === 'ws' || subOptions.type === 'wss') {
-      var options = { app: subOptions.app }
-      if (!subOptions.useDiscovery) {
-        options.host = subOptions.host
-        options.port = subOptions.port
-      }
-      options.protocol = subOptions.type
-      const mdns_ws = require('./mdns-ws')
-      el = new mdns_ws(options)
-      needsLiner = false
-    } else if (subOptions.type === 'tcp') {
-      el = new tcp(subOptions)
-    } else if (subOptions.type === 'udp') {
-      el = new udp(subOptions)
-    } else {
-      throw new Error(`unknown SignalK type: ${subOptions.type}`)
-    }
-    pipeline.push(el)
-    if (needsLiner) {
-      pipeline.push(new liner(subOptions))
-    }
-  }
-}
-
 const dataTypeMapping = {
   SignalK: (pipeline, options) => {
     if (options.type != 'wss' && options.type != 'ws') {
@@ -177,8 +98,97 @@ const dataTypeMapping = {
   }
 }
 
+const pipeStartByType = {
+  NMEA2000: nmea2000input,
+  NMEA0183: nmea0183input,
+  Execute: executeInput,
+  FileStream: fileInput,
+  SignalK: signalKInput
+}
+
 const dataTypeForType = {
   NMEA2000: 'NMEA2000',
   NMEA0183: 'NMEA0183',
   SignalK: 'SignalK'
+}
+
+function nmea2000input (pipeline, subOptions) {
+  var command
+  var toChildProcess
+  if (subOptions.type == 'ngt-1') {
+    ;(command = `actisense-serial ${subOptions.device}`),
+    (toChildProcess = 'nmea2000out')
+  } else if (subOptions.type == 'canbus') {
+    command = `candump ${subOptions.interface}`
+    toChildProcess = null
+  } else {
+    throw new Error(`unknown NMEA2000 type ${subOptions.type}`)
+  }
+  pipeline.push(
+    new execute({
+      command: command,
+      toChildProcess: toChildProcess,
+      app: subOptions.app
+    })
+  )
+  pipeline.push(new liner(subOptions))
+}
+
+function nmea0183input (pipeline, subOptions) {
+  var el
+  if (subOptions.type == 'tcp') {
+    el = new tcp(subOptions)
+  } else if (subOptions.type === 'udp') {
+    el = new udp(subOptions)
+  } else if (subOptions.type === 'serial') {
+    el = new serialport(subOptions)
+  } else {
+    throw new Error(`Unknown networking tyoe: ${options.networking}`)
+  }
+  pipeline.push(el)
+  pipeline.push(new liner(subOptions))
+}
+
+function execute (pipeline, subOptions) {
+  pipeline.push(new execute(subOptions))
+  pipeline.push(new liner(subOptions))
+}
+
+function fileInput (pipeline, subOptions) {
+  pipeline.push(new filestream(subOptions))
+  if (subOptions.dataType != 'Multiplexed') {
+    pipeline.push(
+      new throttle({
+        rate: subOptions.throttleRate || 1000,
+        app: subOptions.app
+      })
+    )
+  }
+  pipeline.push(new liner(subOptions))
+}
+
+function signalKInput (pipeline, subOptions) {
+  var el
+  var needsLiner = true
+  if (subOptions.type === 'ws' || subOptions.type === 'wss') {
+    var options = { app: subOptions.app }
+    if (!subOptions.useDiscovery) {
+      options.host = subOptions.host
+      options.port = subOptions.port
+    }
+    options.protocol = subOptions.type
+    const mdns_ws = require('./mdns-ws')
+    el = new mdns_ws(options)
+    needsLiner = false
+  } else if (subOptions.type === 'tcp') {
+    el = new tcp(subOptions)
+  } else if (subOptions.type === 'udp') {
+    el = new udp(subOptions)
+  } else {
+    throw new Error(`unknown SignalK type: ${subOptions.type}`)
+  }
+  pipeline.push(el)
+  if (needsLiner) {
+    pipeline.push(new liner(subOptions))
+  }
 }
