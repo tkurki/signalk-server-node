@@ -128,8 +128,8 @@ function nmea2000input (pipeline, subOptions) {
   pipeline.push(new liner(subOptions))
 }
 
-function nmea0183input (pipeline, subOptions) {
-  var el
+function nmea0183input (subOptions) {
+  let el
   if (subOptions.type == 'tcp') {
     el = new tcp(subOptions)
   } else if (subOptions.type === 'udp') {
@@ -139,8 +139,7 @@ function nmea0183input (pipeline, subOptions) {
   } else {
     throw new Error(`Unknown networking tyoe: ${options.networking}`)
   }
-  pipeline.push(el)
-  pipeline.push(new liner(subOptions))
+  return [el, new liner(subOptions)]
 }
 
 function execute (subOptions) {
