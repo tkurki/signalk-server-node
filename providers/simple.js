@@ -18,41 +18,30 @@ const throttle = require('./throttle')
 
 function Simple (options) {
   Transform.call(this, { objectMode: true })
-  this.options = options
 
-  var source = pipeStartByType[options.type]
-
-  if (!source) {
-    throw new Error(`invalid type: ${options.type}`)
-  }
-
-  var dataType = options.subOptions.dataType
-
+  const dataType = options.subOptions.dataType || options.type
   if (!dataType) {
-    dataType = options.type
-    if (!dataType) {
-      throw new Error(`Unknown data type for ${options.type}`)
-    }
+    throw new Error(`Unknown data type for ${options.type}`)
   }
 
+  if (!pipeStartByType[options.type]) {
+    throw new Error(`Invalid input type: ${options.type}`)
+  }
   if (!dataTypeMapping[dataType]) {
     throw new Error(`Unknown data type: ${dataType}`)
   }
-
-  var subOptions = JSON.parse(JSON.stringify(options.subOptions))
-  subOptions.app = options.app
-
-  const pipeline = source(subOptions)
-  if (options.logging) {
-    pipeline.push(
-      new log({
-        app: options.app,
-        discriminator: discriminatorByDataType[dataType]
-      })
-    )
+  if (!discriminatorByDataType[dataType]) {
+    throw new Error(`No discriminator for: ${dataType}`)
   }
 
-  pipeline = [].concat(pipeline, dataTypeMapping[dataType](subOptions))
+  const subOptions = JSON.parse(JSON.stringify(options.subOptions))
+  subOptions.app = options.app
+
+  const pipeline = [].concat(
+    pipeStartByType[options.type](subOptions),
+    getLogger(options.logging, discriminatorByDataType[dataType]),
+    dataTypeMapping[dataType](subOptions)
+  )
 
   for (var i = this.pipeline.length - 2; i >= 0; i--) {
     pipeline[i].pipe(pipeline[i + 1])
@@ -74,6 +63,16 @@ Simple.prototype.end = function () {
 }
 
 module.exports = Simple
+
+const getLogger = (logging, discriminator) =>
+  options.logging
+    ? [
+      new log({
+        app: options.app,
+        discriminator
+      })
+    ]
+    : []
 
 const discriminatorByDataType = {
   NMEA2000: 'A',
