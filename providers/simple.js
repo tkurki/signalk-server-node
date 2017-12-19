@@ -148,17 +148,18 @@ function execute (pipeline, subOptions) {
   pipeline.push(new liner(subOptions))
 }
 
-function fileInput (pipeline, subOptions) {
-  pipeline.push(new filestream(subOptions))
+function fileInput (subOptions) {
+  const result = [new filestream(subOptions)]
   if (subOptions.dataType != 'Multiplexed') {
-    pipeline.push(
+    result.push(
       new throttle({
         rate: subOptions.throttleRate || 1000,
         app: subOptions.app
       })
     )
   }
-  pipeline.push(new liner(subOptions))
+  result.push(new liner(subOptions))
+  return result
 }
 
 function signalKInput (subOptions) {
