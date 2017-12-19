@@ -19,7 +19,6 @@ const throttle = require('./throttle')
 function Simple (options) {
   Transform.call(this, { objectMode: true })
   this.options = options
-  this.pipeline = []
 
   var source = pipeStartByType[options.type]
 
@@ -43,9 +42,9 @@ function Simple (options) {
   var subOptions = JSON.parse(JSON.stringify(options.subOptions))
   subOptions.app = options.app
 
-  source(this.pipeline, subOptions)
+  const pipeline = source(subOptions)
   if (options.logging) {
-    this.pipeline.push(
+    pipeline.push(
       new log({
         app: options.app,
         discriminator: discriminatorByDataType[dataType]
@@ -53,12 +52,14 @@ function Simple (options) {
     )
   }
 
-  dataTypeMapping[dataType](this.pipeline, subOptions)
+  pipeline = [].concat(pipeline, dataTypeMapping[dataType](subOptions))
 
   for (var i = this.pipeline.length - 2; i >= 0; i--) {
-    this.pipeline[i].pipe(this.pipeline[i + 1])
+    pipeline[i].pipe(pipeline[i + 1])
   }
-  this.pipeline[this.pipeline.length - 1].pipe(this)
+  pipeline[pipeline.length - 1].pipe(this)
+
+  this.pipeline = pipeline
 }
 
 require('util').inherits(Simple, Transform)
