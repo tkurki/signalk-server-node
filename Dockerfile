@@ -11,6 +11,7 @@ RUN JOBS=MAX npm install --production --unsafe-perm --build-from-source=serialpo
 COPY . ./
 
 ENV INITSYSTEM on
+ENV SIGNALK_NODE_CONFIG_DIR=/data
 
 EXPOSE 3000
 CMD ["node", "/usr/src/signalk-server/bin/signalk-server"]
