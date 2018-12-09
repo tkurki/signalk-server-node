@@ -1,18 +1,16 @@
-FROM node:8
+FROM resin/raspberrypi3-alpine-node:8-slim
 
-RUN groupadd -r signalk && useradd --no-log-init -r -g signalk signalk
-WORKDIR /home/signalk
-RUN chown -R signalk /home/signalk
-USER signalk
+# Install deps
+RUN apk add --no-cache make gcc g++ python linux-headers udev
 
+WORKDIR /usr/src/signalk-server
 
-COPY package*.json ./
-RUN npm install --only=production
+COPY package.json ./
+RUN JOBS=MAX npm install --production --unsafe-perm --build-from-source=serialport && npm cache verify && rm -rf /tmp/*
 
-RUN git clone https://github.com/canboat/canboat.git && cd canboat && make bin && make -C analyzer
-ENV PATH="/home/signalk/canboat/rel/linux-x86_64:${PATH}"
+COPY . ./
 
-COPY . .
+ENV INITSYSTEM on
 
 EXPOSE 3000
-ENTRYPOINT bin/signalk-server
+CMD ["node", "/usr/src/signalk-server/bin/signalk-server"]
