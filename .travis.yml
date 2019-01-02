@@ -16,13 +16,11 @@ services:
       stage: build
       install: true
       script:
-        - 'echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin'
         - 'docker build -f Dockerfile -t tkurki/signalk-server:linux-amd64-"$BRANCH" .'
     -
       stage: build
       install: true
       script:
-        - 'echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin'
         - 'docker run --rm --privileged multiarch/qemu-user-static:register --reset'
         - mkdir tmp
         - >
@@ -36,7 +34,6 @@ services:
       if: branch = master OR tag = true
       install: true
       script:
-        - 'echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin'
         # - export BRANCH=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)
         # - ./make-manifest.sh
         # - docker run --rm -v `pwd`:`pwd` -w `pwd` tkurki/manifest-tool --username="$DOCKER_USER" --password="$DOCKER_PASS" push from-spec docker-manifest.yml
