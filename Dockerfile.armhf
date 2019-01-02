@@ -1,5 +1,7 @@
 FROM arm32v7/node:8
 
+COPY tmp/qemu-arm-static /usr/bin/qemu-arm-static
+
 # RUN groupadd -r signalk && useradd --no-log-init -r -g signalk signalk
 # WORKDIR /home/signalk
 # RUN chown -R signalk /home/signalk
