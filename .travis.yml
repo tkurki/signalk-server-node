@@ -7,8 +7,21 @@ sudo: required
 services:
   - docker
 
+env:
+  - ARCH=amd64
+  - ARCH=armhf
+
 jobs:
   include:
-    - stage: test
+    # - stage: test
+    #   script:
+    #     - npm test
+    - stage: build and push amd64 and arm32v7 images
       script:
-        - npm test
+        - docker run --rm --privileged multiarch/qemu-user-static:register --reset
+        - docker build -f "Dockerfile.$ARCH" -t tkurki/signalk-server:linux-amd64-"$BRANCH" .
+    # - stage: build and push multi-arch manifest
+    #   script:
+    #     - export BRANCH=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)
+    #     - ./make-manifest.sh
+    #     - docker run --rm -v `pwd`:`pwd` -w `pwd` tkurki/manifest-tool --username="$DOCKER_USER" --password="$DOCKER_PASS" push from-spec docker-manifest.yml
