@@ -15,8 +15,7 @@ jobs:
       stage: build
       install: true
       script:
-        - 'echo "building arm"'
-        - 'docker run --rm --privileged multiarch/qemu-user-static:register --reset'
+        - 'echo "building amd64"'
         - 'docker build -f Dockerfile.amd64 -t tkurki/signalk-server:linux-amd64-"$BRANCH" .'
     -
       stage: build
