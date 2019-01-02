@@ -2,7 +2,7 @@ ARG IMAGE_BASE=node
 FROM $IMAGE_BASE:8
 
 #COPY requires one valid argument, second can be nonexistent
-COPY empty_file tmp/qemu-arm-stati[c] /usr/bin
+COPY empty_file tmp/qemu-arm-stati[c] /usr/bin/
 
 RUN groupadd -r signalk && useradd --no-log-init -r -g signalk signalk
 WORKDIR /home/signalk
