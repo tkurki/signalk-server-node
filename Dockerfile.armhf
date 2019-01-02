@@ -6,8 +6,9 @@ FROM arm32v7/node:8
 # USER signalk
 
 COPY package*.json ./
+RUN echo foobar
+RUN npm --version
 RUN echo "console.log('hep')" | node
-run npm --version
 RUN npm install --only=production
 
 # RUN git clone https://github.com/canboat/canboat.git && cd canboat && make bin && make -C analyzer
