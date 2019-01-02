@@ -1,36 +1,27 @@
 language: node_js
 node_js:
-  - "lts/*"
-
+  - 'lts/*'
 sudo: required
-
 services:
   - docker
-
-stages:
-  - mocha
-  - test
-  - multiarch
-
-env:
-  - ARCH=amd64
-  - ARCH=armhf
-
-
 jobs:
   include:
-    - stage: mocha
+    -
+      stage: test
+      install: true
       script:
-        - echo "mocha"
-        # - npm test
-    - stage: test
+        - 'echo "mocha"'
+    -
+      stage: build
+      install: true
       script:
-        - echo "building $ARCH"
-        - docker run --rm --privileged multiarch/qemu-user-static:register --reset
-        - docker build -f "Dockerfile.$ARCH" -t tkurki/signalk-server:linux-"$ARCH"-"$BRANCH" .
-    - stage: multiarch
+        - 'echo "building arm"'
+        - 'docker run --rm --privileged multiarch/qemu-user-static:register --reset'
+        - 'docker build -f Dockerfile.amd64 -t tkurki/signalk-server:linux-amd64-"$BRANCH" .'
+    -
+      stage: build
+      install: true
       script:
-        - echo multiarch
-    #     - export BRANCH=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)
-    #     - ./make-manifest.sh
-    #     - docker run --rm -v `pwd`:`pwd` -w `pwd` tkurki/manifest-tool --username="$DOCKER_USER" --password="$DOCKER_PASS" push from-spec docker-manifest.yml
+        - 'echo "building arm"'
+        - 'docker run --rm --privileged multiarch/qemu-user-static:register --reset'
+        - 'docker build -f Dockerfile.armhf -t tkurki/signalk-server:linux-armhf-"$BRANCH" .'
