@@ -15,13 +15,11 @@ jobs:
       stage: build
       install: true
       script:
-        - 'echo "building amd64"'
-        # - 'docker build -f Dockerfile.amd64 -t tkurki/signalk-server:linux-amd64-"$BRANCH" .'
+        - 'docker build -f Dockerfile -t tkurki/signalk-server:linux-amd64-"$BRANCH" .'
     -
       stage: build
       install: true
       script:
-        - 'echo "building arm"'
         - 'docker run --rm --privileged multiarch/qemu-user-static:register --reset'
         - mkdir tmp
         - >
@@ -29,4 +27,12 @@ jobs:
            curl -L -o qemu-arm-static.tar.gz https://github.com/multiarch/qemu-user-static/releases/download/v2.11.0/qemu-arm-static.tar.gz &&
            tar xzf qemu-arm-static.tar.gz &&
            popd        
-        - 'docker build -f Dockerfile.armhf -t tkurki/signalk-server:linux-armhf-"$BRANCH" .'
+        - 'docker build -f Dockerfile -t tkurki/signalk-server:linux-armhf-"$BRANCH" --build-arg IMAGE_BASE=arm32v7/node .'
+    -
+      stage: push
+      if: branch = master OR tag = true
+      install: true
+        # - export BRANCH=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)
+        # - ./make-manifest.sh
+        # - docker run --rm -v `pwd`:`pwd` -w `pwd` tkurki/manifest-tool --username="$DOCKER_USER" --password="$DOCKER_PASS" push from-spec docker-manifest.yml
+
