@@ -16,11 +16,17 @@ jobs:
       install: true
       script:
         - 'echo "building amd64"'
-        - 'docker build -f Dockerfile.amd64 -t tkurki/signalk-server:linux-amd64-"$BRANCH" .'
+        # - 'docker build -f Dockerfile.amd64 -t tkurki/signalk-server:linux-amd64-"$BRANCH" .'
     -
       stage: build
       install: true
       script:
         - 'echo "building arm"'
         - 'docker run --rm --privileged multiarch/qemu-user-static:register --reset'
+        - mkdir tmp
+        - >
+           pushd tmp &&
+           curl -L -o qemu-arm-static.tar.gz https://github.com/multiarch/qemu-user-static/releases/download/v2.11.0/qemu-arm-static.tar.gz &&
+           tar xzf qemu-arm-static.tar.gz &&
+           popd        
         - 'docker build -f Dockerfile.armhf -t tkurki/signalk-server:linux-armhf-"$BRANCH" .'
