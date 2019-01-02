@@ -11,6 +11,7 @@ env:
   - ARCH=amd64
   - ARCH=armhf
 
+
 jobs:
   include:
     # - stage: test
@@ -19,7 +20,7 @@ jobs:
     - stage: build and push amd64 and arm32v7 images
       script:
         - docker run --rm --privileged multiarch/qemu-user-static:register --reset
-        - docker build -f "Dockerfile.$ARCH" -t tkurki/signalk-server:linux-amd64-"$BRANCH" .
+        - docker build -f "Dockerfile.$ARCH" -t tkurki/signalk-server:linux-"$ARCH"-"$BRANCH" .
     # - stage: build and push multi-arch manifest
     #   script:
     #     - export BRANCH=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)
