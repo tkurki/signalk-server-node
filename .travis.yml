@@ -14,8 +14,8 @@ jobs:
     install: true
     script:
     - 'echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin'
-    - docker build -f Dockerfile -t tkurki/signalk-server:linux-amd64-"$BRANCH" .
-    - docker push signalk/signalk-server:linux-amd64-"$BRANCH"
+    - docker build -f Dockerfile -t tkurki/signalk-server:linux-amd64-"$TRAVIS_BRANCH" .
+    - docker push tkurki/signalk-server:linux-amd64-"$TRAVIS_BRANCH"
   - stage: build
     install: true
     script:
@@ -24,9 +24,9 @@ jobs:
     - mkdir tmp
     - "pushd tmp && curl -L -o qemu-arm-static.tar.gz https://github.com/multiarch/qemu-user-static/releases/download/v2.11.0/qemu-arm-static.tar.gz
       && tar xzf qemu-arm-static.tar.gz && popd        \n"
-    - docker build -f Dockerfile -t tkurki/signalk-server:linux-armhf-"$BRANCH" --build-arg
+    - docker build -f Dockerfile -t tkurki/signalk-server:linux-armhf-"$TRAVIS_BRANCH" --build-arg
       IMAGE_BASE=arm32v7/node .
-    - docker push signalk/signalk-server:linux-armhf-"$BRANCH"
+    - docker push tkurki/signalk-server:linux-armhf-"$TRAVIS_BRANCH"
   - stage: push
     if: branch = master OR tag = true
     install: true
