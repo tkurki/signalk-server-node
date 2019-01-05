@@ -30,7 +30,7 @@ jobs:
     if: branch = master OR tag = true OR branch = docker-test
     install: true
     script:
-    - docker run --rm docker:18.09 sh -c "mkdir /root/.docker && echo '{\"experimental\":\"enabled\"}' >/root/.docker/config.json && docker manifest create $REPO_BASE/signalk-server:docker-test $REPO_BASE/signalk-server:linux-armhf-docker-test $REPO_BASE/signalk-server:linux-amd64-docker-test && (echo $DOCKER_PASSWORD |  docker login -u $DOCKER_USER --password-stdin) && docker manifest push $REPO_BASE/signalk-server:docker-test"
+    - docker run --rm docker:18.09 sh -c "mkdir /root/.docker && echo '{\"experimental\":\"enabled\"}' >/root/.docker/config.json && docker manifest create $REPO_BASE/signalk-server:docker-test $REPO_BASE/signalk-server:linux-armhf-docker-test $REPO_BASE/signalk-server:linux-amd64-docker-test && (echo $DOCKER_PASSWORD |  docker login -u $DOCKER_USERNAME --password-stdin) && docker manifest push $REPO_BASE/signalk-server:docker-test"
 env:
   global:
     REPO_BASE=tkurki
