@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-- lts/*
+- "8"
 sudo: required
 services:
 - docker
@@ -30,7 +30,7 @@ jobs:
     if: branch = master OR tag = true OR branch = docker-test
     install: true
     script:
-    - docker run --rm docker:18.09 sh -c "mkdir /root/.docker && echo '{\"experimental\":\"enabled\"}' >/root/.docker/config.json && docker manifest create tkurki/signalk-server:docker-test tkurki/signalk-server:linux-armhf-docker-test tkurki/signalk-server:linux-amd64-docker-test && (echo $DOCKER_PASSWORD |  docker login -u $DOCKER_USER --password-stdin) && docker manifest push tkurki/signalk-server:docker-test"
+    - docker run --rm docker:18.09 sh -c "mkdir /root/.docker && echo '{\"experimental\":\"enabled\"}' >/root/.docker/config.json && docker manifest create tkurki/signalk-server:docker-test tkurki/signalk-server:linux-armhf-docker-test tkurki/signalk-server:linux-amd64-docker-test && (echo $DOCKER_PASSWORD |  docker login -u $DOCKER_USERNAME --password-stdin) && docker manifest push tkurki/signalk-server:docker-test"
 env:
   matrix:
     secure: KnNCtnJYEvECkp5OBPHjr85yfcPjT5/aEOzHmF9b+wSUqA9rSMTvdRnKc5yQklES5suCMuV5HehoMgwME5gE45KcGvzwkOz0cjRz+tXI3DAWFd2VyGj6YrLddBu+l4E2/YY9AhKj+2wUhg7tyrJEuT9AimBv5CxTedZxumtnTfNRN4xXNlm9zWaoBeWW7snY2eJ8DWEqy+z2USBaTHw1eO2d9X3hcjadulxVxl2cC46qc6X0k+yx2aVN7zKeb5a75ZKltyHanuXWL/dQkiPf3iuuH06JqIzg38y4ea0V5dMWoLoXI26zvQmVPGdyUb9Frb+6Fht+KAdLkttLsWEdcrD5rpXFrwYC6JghoCSvqjQQE9m8B6/pwArPyKpDQF77GoXblqWRQ3JggSbFomZ4CigamlFbbYcXcWcUHBsgT9wc8pbEKn+7T3vGbVQkzf3kLg4ghsK83ZJDOxI/T4UBuZhknCM6X3NT9gY8eQu6E1mEzdOxtUDtAoWA8sQqXUjZXuAqQngc871u06vLbSgm3Zxh1t02pnac5SoocPmVIJGTQONuVu3G819dQbgJ7wZDbbNLD77QTHhmy63vQG/JK3oXIP7fglyr3F1bgDsXGaVaLC4MJ9L7VsPKUgrO1YuiSax+k0UHhcgPy/zMHLMMczXiS8MWMk2i5n++4bJ8WnQ=
