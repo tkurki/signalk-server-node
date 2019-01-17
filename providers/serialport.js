@@ -135,11 +135,11 @@ SerialStream.prototype.start = function () {
     }.bind(this)
   )
 
-  var that = this
+  const that = this
   let pendingWrites = 0
   const stdOutEvent = this.options.toStdout
   if (stdOutEvent) {
-    ;(isArray(stdOutEvent) ? stdOutEvent : [stdOutEvent]).forEach(event => {
+    (isArray(stdOutEvent) ? stdOutEvent : [stdOutEvent]).forEach(event => {
       console.log(event)
 
       const onDrain = () => {

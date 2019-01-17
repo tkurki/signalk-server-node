@@ -59,7 +59,7 @@ function Simple (options) {
     dataTypeMapping[mappingType](options)
   )
 
-  for (var i = pipeline.length - 2; i >= 0; i--) {
+  for (let i = pipeline.length - 2; i >= 0; i--) {
     pipeline[i].pipe(pipeline[i + 1])
   }
   pipeline[pipeline.length - 1].pipe(this)
@@ -83,11 +83,11 @@ module.exports = Simple
 const getLogger = (app, logging, discriminator) =>
   logging
     ? [
-      new Log({
-        app: app,
-        discriminator
-      })
-    ]
+        new Log({
+          app: app,
+          discriminator
+        })
+      ]
     : []
 
 const discriminatorByDataType = {
@@ -188,7 +188,9 @@ function nmea2000input (subOptions, logging) {
     let command
     let toChildProcess
     if (subOptions.type == 'ngt-1') {
-      command = `actisense-serial -s ${(subOptions.baudrate || 115200)} ${subOptions.device}`
+      command = `actisense-serial -s ${subOptions.baudrate || 115200} ${
+        subOptions.device
+      }`
       toChildProcess = 'nmea2000out'
     } else if (subOptions.type == 'canbus') {
       command = `candump ${subOptions.interface} | candump2analyzer`
